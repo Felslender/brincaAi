@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FormModal from '../components/FormModal';
+import FormModal from '@/components/FormModal';
 import { MaterialIcons } from '@expo/vector-icons'; // For 3-dots menu icon
 
-const DataListScreen = () => {
-  const [dataList, setDataList] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null); // For edit mode
+interface DataItem {
+  childName: string;
+}
+
+const HomeScreen: React.FC = () => {
+  const [dataList, setDataList] = useState<DataItem[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<number | null>(null); // For edit mode
 
   // Load data from AsyncStorage
   const loadData = async () => {
@@ -24,7 +28,7 @@ const DataListScreen = () => {
   };
 
   // Save or Update Data
-  const handleSave = async (formData) => {
+  const handleSave = async (formData: DataItem) => {
     try {
       let updatedList;
       if (selectedItem !== null) {
@@ -46,7 +50,7 @@ const DataListScreen = () => {
   };
 
   // Delete a single item
-  const deleteItem = async (index) => {
+  const deleteItem = async (index: number) => {
     try {
       const updatedList = [...dataList];
       updatedList.splice(index, 1);
@@ -62,12 +66,12 @@ const DataListScreen = () => {
     loadData();
   }, []);
 
-  const openEditModal = (index) => {
+  const openEditModal = (index: number) => {
     setSelectedItem(index);
     setModalVisible(true);
   };
 
-  const renderItem = ({ item, index }) => (
+  const renderItem = ({ item, index }: { item: DataItem; index: number }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.itemText}>
         <Text style={styles.label}>Nome da Criança:</Text> {item.childName}
@@ -138,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DataListScreen;
+export default HomeScreen;

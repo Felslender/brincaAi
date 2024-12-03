@@ -1,13 +1,29 @@
 import { useState, useEffect } from 'react';
 import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-const FormModal = ({ visible, onClose, onSubmit, initialData }) => {
-  const [childName, setChildName] = useState('');
-  const [guardianName, setGuardianName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [duration, setDuration] = useState('');
+interface FormModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => void;
+  initialData: FormData | null;
+}
+
+interface FormData {
+  childName: string;
+  guardianName: string;
+  phone: string;
+  birthDate: string;
+  startDate: string;
+  duration: string;
+}
+
+const FormModal: React.FC<FormModalProps> = ({ visible, onClose, onSubmit, initialData }) => {
+  const [childName, setChildName] = useState<string>('');
+  const [guardianName, setGuardianName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [birthDate, setBirthDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [duration, setDuration] = useState<string>('');
 
   useEffect(() => {
     if (initialData) {
@@ -28,7 +44,7 @@ const FormModal = ({ visible, onClose, onSubmit, initialData }) => {
   }, [initialData]);
 
   const handleSave = () => {
-    const formData = {
+    const formData: FormData = {
       childName,
       guardianName,
       phone,
