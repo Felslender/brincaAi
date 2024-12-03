@@ -1,18 +1,40 @@
+import { useState } from "react";
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
 
 
 export function ModalConfig({handleClose}){
-    
+
+    const [date, setDate] = useState("");
+
+
+    const handleDateChange = (text) => {
+    const formattedText = text
+      .replace(/[^0-9]/g, "")
+      .replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3"); 
+    setDate(formattedText.slice(0, 10)); 
+  };
+
+
     return(
         <View style={styles.container}>
             <View style={styles.box}>
                 <Text style={styles.title}>Adicionar cronômetro</Text>
                 <View style={styles.inputArea}>
-                    <Text>Nome da criança</Text>
+                    <Text>Nome da Criança</Text>
                     <TextInput style={styles.input} placeholder='Nome da criança' />
                     <Text>Nome do Responsavel</Text>
                     <TextInput style={styles.input} placeholder='Nome do responsavel' />
-                    <Text>Número de telefone</Text>
+                    <Text>Número de Telefone</Text>
+                    <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' />
+                    <Text>Data de Nascimento</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={date}
+                        onChangeText={handleDateChange}
+                        placeholder="dd/mm/yyyy"
+                        keyboardType="numeric"
+                    />
+                    <Text>Minutos</Text>
                     <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' />
                 </View>
 
@@ -39,7 +61,7 @@ const styles = StyleSheet.create({
     box: {
         width: "90%",
         padding: 24,
-        marginBottom: 60,
+        marginBottom: 10,
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
