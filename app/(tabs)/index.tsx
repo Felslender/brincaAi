@@ -1,12 +1,29 @@
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native'
+import {useState} from 'react'
+import { ModalConfig } from '@/components/modal/configModal';
+
 
 export default function HomeScreen() {
+
+  const [modalConfigVisible, setModalConfigVisible] = useState(false)
+
+
   return (
 
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>BrincaAI</Text>
       </View>
+
+      <TouchableOpacity style={styles.button} onPress={ () => setModalConfigVisible(true)}>
+        <Text style={styles.buttonTitle}>Adicionar +</Text>
+      </TouchableOpacity>
+
+      <Modal visible={modalConfigVisible} animationType='fade' transparent={true}>
+        <ModalConfig handleClose={ () => setModalConfigVisible(false) } />
+      </Modal>
+
+
     </View>
   );
 }
@@ -14,7 +31,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
+    alignItems: "center",
   },
   header: {
     width: "100%",
@@ -26,6 +44,21 @@ const styles = StyleSheet.create({
   title: {
     color: '#FFFFFF',
     fontWeight: "bold",
-    fontSize: 23
+    fontSize: 26
+  },
+  button: {
+    width: "60%",
+    height: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 6,
+    backgroundColor: "#49d72d",
+    bottom: 55,
+    position: "absolute"
+  },
+  buttonTitle: {
+    color: "#f0f2f5",
+    fontSize: 20,
+    fontWeight: "bold",
   }
 });
