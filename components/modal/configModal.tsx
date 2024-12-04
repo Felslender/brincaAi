@@ -8,7 +8,6 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity, TextInputProps} fro
         numTelefone: number;
         dataNascimento: any;
         minutos: any;
-        tempoCriacao: any;
     }
 
 

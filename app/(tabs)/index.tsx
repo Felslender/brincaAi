@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native'
 import {useState} from 'react'
+import { View, Text, FlatList, StyleSheet, Button, Alert, TouchableOpacity, Modal } from 'react-native';
 import { ModalConfig } from '@/components/modal/configModal';
 
 
