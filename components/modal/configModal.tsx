@@ -1,17 +1,34 @@
 import { useState } from "react";
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, TextInputProps} from 'react-native'
+
+
+    interface Cronometro extends TextInputProps{
+        nomeCrianca: string;
+        nomeResponsavel: string;
+        numTelefone: number;
+        dataNascimento: any;
+        minutos: any;
+        tempoCriacao: any;
+    }
+
 
 
 export function ModalConfig({handleClose}){
 
-    const [date, setDate] = useState("");
+    const [formData, setFormData] = useState({
+        nomeCrianca: "",
+        nomeResponsavel: "",
+        numTelefone: "",
+        dataNascimento: "",
+        minutos: "",
+      });
 
 
     const handleDateChange = (text) => {
     const formattedText = text
       .replace(/[^0-9]/g, "")
       .replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3"); 
-    setDate(formattedText.slice(0, 10)); 
+    setFormData(formattedText.slice(0, 10)); 
   };
 
 
@@ -21,28 +38,27 @@ export function ModalConfig({handleClose}){
                 <Text style={styles.title}>Adicionar cronômetro</Text>
                 <View style={styles.inputArea}>
                     <Text>Nome da Criança</Text>
-                    <TextInput style={styles.input} placeholder='Nome da criança' />
+                    <TextInput style={styles.input} placeholder='Nome da criança' value={formData.nomeCrianca} />
                     <Text>Nome do Responsavel</Text>
-                    <TextInput style={styles.input} placeholder='Nome do responsavel' />
+                    <TextInput style={styles.input} placeholder='Nome do responsavel' value={formData.nomeResponsavel} />
                     <Text>Número de Telefone</Text>
-                    <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' />
+                    <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' value={formData.numTelefone} />
                     <Text>Data de Nascimento</Text>
                     <TextInput
                         style={styles.input}
-                        value={date}
+                        value={formData.dataNascimento}
                         onChangeText={handleDateChange}
                         placeholder="dd/mm/yyyy"
                         keyboardType="numeric"
                     />
                     <Text>Minutos</Text>
-                    <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' />
+                    <TextInput style={styles.input} placeholder='Número de telefone' keyboardType='numeric' value={formData.minutos} />
                 </View>
-
                 <View style={styles.buttonArea}>
                     <TouchableOpacity style={styles.button} onPress={handleClose}>
                         <Text style={styles.buttonTitle}>Voltar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, styles.buttonSave]}>
+                    <TouchableOpacity style={[styles.button, styles.buttonSave]} >
                         <Text style={styles.buttonTitleSave}>Salvar</Text>
                     </TouchableOpacity>
                 </View>
