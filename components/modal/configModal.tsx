@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Switch } from "react-native";
 import useStorage from "@/hooks/useStorage";
 import { FormData } from "@/hooks/useStorage";
 
-export function ModalConfig({ handleClose }) {
+export function ModalConfig( {handleClose} ) {
   const [formData, setFormData] = useState<FormData>({
     nomeCrianca: "",
     nomeResponsavel: "",
     numTelefone: "",
     dataNascimento: "",
-    minutos: 0,
+    pago: false,
+    minutos: "",
   });
 
   const {saveItem, getItem} = useStorage()
@@ -61,14 +62,21 @@ export function ModalConfig({ handleClose }) {
             value={formData.numTelefone}
             onChangeText={(text) => handleInputChange("numTelefone", text)}
           />
-          <Text>Data de Nascimento</Text>
+          {/* <Text>Data de Nascimento</Text>
           <TextInput
             style={styles.input}
             placeholder="dd/mm/yyyy"
             keyboardType="numeric"
             value={formData.dataNascimento}
             onChangeText={handleDateChange}
+          /> */}
+          <Text>Pago:</Text>
+          <View style={styles.switchArea}>
+          <Switch style={styles.switch}
+            value={formData.pago}
+            onValueChange={(value) => handleInputChange("pago", value)}
           />
+          </View>
           <Text>Minutos</Text>
           <TextInput
             style={styles.input}
@@ -159,4 +167,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FFF",
   },
+  switchArea: {
+    flexDirection: "row"
+  },
+  switch: {
+    
+  }
 });

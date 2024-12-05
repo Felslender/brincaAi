@@ -31,7 +31,7 @@ export default function HomeScreen() {
         <Text style={styles.title}>BrincaAI</Text>
       </View>
 
-      <View>
+      <View style={styles.listContainer}>
         <FlatList
           style={{paddingLeft: 14, paddingTop: 14}}
           data={listData}
@@ -69,6 +69,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: "bold",
     fontSize: 26
+  },
+  listContainer: {
+    flex: 1,
   },
   button: {
     marginLeft: "20%",

@@ -5,6 +5,7 @@ export interface FormData {
     nomeResponsavel: string;
     numTelefone: string;
     dataNascimento: string;
+    pago: boolean;
     minutos: string;
 }
 
