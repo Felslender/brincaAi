@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
@@ -47,6 +47,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#2F75F7" />
+
       <View style={styles.header}>
         <Text style={styles.title}>BrincaAI</Text>
       </View>
@@ -65,10 +67,11 @@ export default function HomeScreen() {
       <Modal visible={modalConfigVisible} animationType="fade" transparent={true}>
         <ModalConfig handleClose={() => setModalConfigVisible(false)} />
       </Modal>
-
-      <TouchableOpacity style={styles.button} onPress={() => setModalConfigVisible(true)}>
-        <Text style={styles.buttonTitle}>Adicionar +</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonArea}>
+        <TouchableOpacity style={styles.button} onPress={() => setModalConfigVisible(true)}>
+          <Text style={styles.buttonTitle}>Adicionar +</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -93,6 +96,15 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
   },
+  buttonArea: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 6,
+    backgroundColor: "#ededed",
+    width: "100%",
+    height: 100,
+    borderColor: "black",
+  },
   button: {
     marginLeft: "20%",
     width: "60%",
@@ -101,7 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 6,
     backgroundColor: "#49d72d",
-    bottom: 50,
     position: "absolute",
   },
   buttonTitle: {

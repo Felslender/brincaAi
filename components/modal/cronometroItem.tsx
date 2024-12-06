@@ -6,12 +6,14 @@ import useStorage from "@/hooks/useStorage";
 
 export function CronometroItem({ data, onDelete }) {
   const [timeLeft, setTimeLeft] = useState(null);
+  const [timeFinished, setTimeFinished] = useState(null);
   const { deleteItem } = useStorage();
 
   useEffect(() => {
     const identifier = `cronometro-${data.nomeCrianca}`;
     const startTimeKey = `${identifier}-startTime`;
     const durationKey = `${identifier}-duration`;
+    const finishedTimeKey = `${identifier}-finishedTime`;
 
     const calculateTimeLeft = async () => {
       const storedStartTime = await AsyncStorage.getItem(startTimeKey);
@@ -22,6 +24,19 @@ export function CronometroItem({ data, onDelete }) {
         const elapsedTime = Math.floor((currentTime - parseInt(storedStartTime)) / 1000);
         const durationInSeconds = parseInt(storedDuration) * 60;
         const remainingTime = durationInSeconds - elapsedTime;
+
+        if (remainingTime <= 0) {
+          const finishedTime = await AsyncStorage.getItem(finishedTimeKey);
+          if (finishedTime) {
+            setTimeFinished(finishedTime);
+          } else {
+            const horario = new Date();
+            const formattedTime = `${horario.getHours()}:${String(horario.getMinutes()).padStart(2, "0")}`;
+            setTimeFinished(formattedTime);
+            await AsyncStorage.setItem(finishedTimeKey, formattedTime);
+          }
+        }
+
         setTimeLeft(remainingTime > 0 ? remainingTime : 0);
       }
     };
@@ -105,16 +120,15 @@ export function CronometroItem({ data, onDelete }) {
   };
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onLongPress={showDetails}
-    >
+    <TouchableOpacity style={styles.container} onLongPress={showDetails}>
       <View style={styles.infoArea}>
         <Text style={styles.nome}>{data.nomeCrianca}</Text>
         <Text>Status: {data.pago ? "Pago" : "Não Pago"}</Text>
       </View>
       <View style={styles.cronometroArea}>
-        <Text style={timeLeft === 0 ? styles.textRed : styles.textDefault}>{timeLeft === 0 ? "Finalizado" : "Tempo"}</Text>
+        <Text style={timeLeft === 0 ? styles.textRed : styles.textDefault}>
+          {timeLeft === 0 ? "Finalizado" : "Tempo"}
+        </Text>
         <Text style={timeLeft === 0 ? styles.tempoRed : styles.tempo}>
           {timeLeft !== null ? formatTime(timeLeft) : "Carregando..."}
         </Text>
@@ -140,9 +154,8 @@ const styles = StyleSheet.create({
   infoArea: {
     backgroundColor: "#f7f7f7",
     borderRadius: 6,
-    gap: 5,
     width: 190,
-    padding: 5,
+    padding: 2,
   },
   cronometroArea: {
     borderRadius: 6,
