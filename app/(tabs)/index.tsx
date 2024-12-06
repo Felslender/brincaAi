@@ -47,7 +47,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2F75F7" />
+      <StatusBar barStyle="light-content" backgroundColor="black" />
 
       <View style={styles.header}>
         <Text style={styles.title}>BrincaAI</Text>

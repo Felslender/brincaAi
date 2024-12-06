@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { Alert } from 'react-native';
 
 export interface FormData {
     nomeCrianca: string;
@@ -26,6 +27,7 @@ const useStorage = () => {
       dados.push(newData);
 
       await AsyncStorage.setItem('@form', JSON.stringify(dados));
+      // await AsyncStorage.clear()
     } catch (error) {
       console.log("erro ao salvar", error);
       return [];
@@ -34,16 +36,28 @@ const useStorage = () => {
 
   const deleteItem = async (nomeCrianca: string) => {
     try {
-      const dados = await getItem();
-      const updatedDados = dados.filter(item => item.nomeCrianca !== nomeCrianca);
+        const dados = await getItem();
 
-      await AsyncStorage.setItem('@form', JSON.stringify(updatedDados));
-      return true;
+        const updatedDados = dados.filter(item => item.nomeCrianca !== nomeCrianca);
+        await AsyncStorage.setItem('@form', JSON.stringify(updatedDados));
+
+        const identifier = `cronometro-${nomeCrianca}`;
+
+        const keysToRemove = [
+            `${identifier}-startTime`,
+            `${identifier}-duration`,
+            `${identifier}-finishedTime`,
+        ];
+
+        await AsyncStorage.multiRemove(keysToRemove);
+  
+        return true;
     } catch (error) {
-      console.log("Erro ao excluir", error);
-      return false;
+        console.log("Erro ao excluir", error);
+        return false;
     }
-  };
+};
+
 
   return {
     getItem,

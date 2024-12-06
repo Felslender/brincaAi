@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Switch } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Switch, Alert } from "react-native";
 import useStorage from "@/hooks/useStorage";
 import { FormData } from "@/hooks/useStorage";
 
@@ -26,13 +26,24 @@ export function ModalConfig( {handleClose} ) {
     handleInputChange("dataNascimento", formattedText.slice(0, 10));
   };
 
-  async function handleSave(){
-
-    await saveItem(formData)
-    console.log(await getItem())
-
-    handleClose()
-  };
+  async function handleSave() {
+    const cronometros = await getItem(); 
+  
+    const existe = cronometros.some(item => item.nomeCrianca === formData.nomeCrianca);
+  
+    if (existe) {
+      Alert.alert(
+        "Erro",
+        `Já existe um cronômetro com o nome "${formData.nomeCrianca}". Por favor, escolha outro nome.`
+      );
+      return; 
+    }
+    await saveItem(formData);
+    console.log(await getItem());
+  
+    handleClose(); 
+  }
+  
 
   return (
     <View style={styles.container}>
