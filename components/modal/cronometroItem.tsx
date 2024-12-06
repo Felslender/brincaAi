@@ -107,7 +107,7 @@ export function CronometroItem({ data, onDelete }) {
   return (
     <TouchableOpacity
       style={styles.container}
-      onLongPress={showDetails} // Exibe detalhes no toque longo
+      onLongPress={showDetails}
     >
       <View style={styles.infoArea}>
         <Text style={styles.nome}>{data.nomeCrianca}</Text>

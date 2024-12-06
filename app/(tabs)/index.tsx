@@ -20,7 +20,6 @@ export default function HomeScreen() {
     loadList();
   }, [focused, modalConfigVisible === false]);
 
-  // Lida com a exclusão de um item
   const handleDelete = async (nomeCrianca) => {
     Alert.alert(
       "Confirmar Exclusão",
