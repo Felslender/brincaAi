@@ -31,7 +31,6 @@ export function ModalConfig( {handleClose} ) {
     await saveItem(formData)
     console.log(await getItem())
 
-    alert(JSON.stringify(formData, null, 2));
     handleClose()
   };
 

@@ -32,9 +32,23 @@ const useStorage = () => {
     }
   };
 
+  const deleteItem = async (nomeCrianca: string) => {
+    try {
+      const dados = await getItem();
+      const updatedDados = dados.filter(item => item.nomeCrianca !== nomeCrianca);
+
+      await AsyncStorage.setItem('@form', JSON.stringify(updatedDados));
+      return true;
+    } catch (error) {
+      console.log("Erro ao excluir", error);
+      return false;
+    }
+  };
+
   return {
     getItem,
     saveItem,
+    deleteItem
   };
 };
 
