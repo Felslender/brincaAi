@@ -3,7 +3,6 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, Statu
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
-import { EditModal } from "@/components/modal/editModal";
 import useStorage from "@/hooks/useStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -22,7 +21,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     loadList();
-  }, [focused, modalConfigVisible === false]);
+  }, [focused, modalConfigVisible === false, modalEditVisible === false]);
 
   const handleDelete = async (nomeCrianca) => {
     const success = await deleteItem(nomeCrianca);
@@ -46,8 +45,6 @@ export default function HomeScreen() {
   
     setModalEditVisible(false); 
   };
-  
-  
 
   return (
     <View style={styles.container}>
@@ -74,14 +71,7 @@ export default function HomeScreen() {
       <Modal visible={modalConfigVisible} animationType="fade" transparent={true}>
         <ModalConfig handleClose={() => setModalConfigVisible(false)} />
       </Modal>
-
-      <EditModal
-        visible={modalEditVisible}
-        data={editItem}
-        onClose={() => setModalEditVisible(false)}
-        onSave={handleSaveEdit}
-      />
-
+      
       <View style={styles.buttonArea}>
         <TouchableOpacity style={styles.button} onPress={() => setModalConfigVisible(true)}>
           <Text style={styles.buttonTitle}>Adicionar +</Text>
@@ -90,6 +80,8 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

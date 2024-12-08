@@ -150,6 +150,7 @@ export function CronometroItem({ data, onDelete }) {
           <MaterialIcons name="delete-forever" size={45} color="black" />
         </TouchableOpacity>
       </TouchableOpacity>
+      
       <EditModal
         visible={modalVisible}
         data={data}
