@@ -72,14 +72,6 @@ export function ModalConfig( {handleClose} ) {
             value={formData.numTelefone}
             onChangeText={(text) => handleInputChange("numTelefone", text)}
           />
-          {/* <Text>Data de Nascimento</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="dd/mm/yyyy"
-            keyboardType="numeric"
-            value={formData.dataNascimento}
-            onChangeText={handleDateChange}
-          /> */}
           <Text>Pago:</Text>
           <View style={styles.switchArea}>
           <Switch style={styles.switch}

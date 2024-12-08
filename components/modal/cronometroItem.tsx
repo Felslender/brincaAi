@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, AppState, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, AppState, TouchableOpacity, Alert, } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { EditModal } from "./editModal";
 import useStorage from "@/hooks/useStorage";
 
 export function CronometroItem({ data, onDelete }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [timeFinished, setTimeFinished] = useState(null);
-  const { deleteItem } = useStorage();
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   useEffect(() => {
     const identifier = `cronometro-${data.nomeCrianca}`;
@@ -107,36 +109,54 @@ export function CronometroItem({ data, onDelete }) {
     );
   };
 
-  const showDetails = () => {
-    Alert.alert(
-      "Detalhes do Cronômetro",
-      `Nome da Criança: ${data.nomeCrianca}\n` +
-        `Responsável: ${data.nomeResponsavel}\n` +
-        `Telefone: ${data.numTelefone}\n` +
-        `Pago: ${data.pago ? "Sim" : "Não"}\n` +
-        `Minutos: ${data.minutos}`,
-      [{ text: "OK", style: "default" }]
+  const handleEditSave = async (updatedData) => {
+    const identifier = `cronometro-${updatedData.nomeCrianca}`;
+    const startTimeKey = `${identifier}-startTime`;
+    const durationKey = `${identifier}-duration`;
+  
+    if (updatedData.minutos !== data.minutos) {
+      const startTime = new Date().getTime();
+      await AsyncStorage.setItem(startTimeKey, startTime.toString());
+      await AsyncStorage.setItem(durationKey, updatedData.minutos.toString());
+      setTimeLeft(parseInt(updatedData.minutos) * 60);
+    }
+  
+    const storedData = await AsyncStorage.getItem("@form");
+    const parsedData = storedData ? JSON.parse(storedData) : [];
+    const updatedDataArray = parsedData.map((item) =>
+      item.nomeCrianca === data.nomeCrianca ? updatedData : item
     );
+    await AsyncStorage.setItem("@form", JSON.stringify(updatedDataArray));
+  
+    setModalVisible(false);
   };
 
   return (
-    <TouchableOpacity style={styles.container} onLongPress={showDetails}>
-      <View style={styles.infoArea}>
-        <Text style={styles.nome}>{data.nomeCrianca}</Text>
-        <Text>Status: {data.pago ? "Pago" : "Não Pago"}</Text>
-      </View>
-      <View style={styles.cronometroArea}>
-        <Text style={timeLeft === 0 ? styles.textRed : styles.textDefault}>
-          {timeLeft === 0 ? "Finalizado" : "Tempo"}
-        </Text>
-        <Text style={timeLeft === 0 ? styles.tempoRed : styles.tempo}>
-          {timeLeft !== null ? formatTime(timeLeft) : "Carregando..."}
-        </Text>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleDelete}>
-        <MaterialIcons name="delete-forever" size={45} color="black" />
+    <>
+      <TouchableOpacity style={styles.container} onLongPress={() => setModalVisible(true)}>
+        <View style={styles.infoArea}>
+          <Text style={styles.nome}>{data.nomeCrianca}</Text>
+          <Text>Status: {data.pago ? "Pago" : "Não Pago"}</Text>
+        </View>
+        <View style={styles.cronometroArea}>
+          <Text style={timeLeft === 0 ? styles.textRed : styles.textDefault}>
+            {timeLeft === 0 ? "Finalizado" : "Tempo"}
+          </Text>
+          <Text style={timeLeft === 0 ? styles.tempoRed : styles.tempo}>
+            {timeLeft !== null ? formatTime(timeLeft) : "Carregando..."}
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleDelete}>
+          <MaterialIcons name="delete-forever" size={45} color="black" />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
+      <EditModal
+        visible={modalVisible}
+        data={data}
+        onClose={() => setModalVisible(false)}
+        onSave={handleEditSave}
+      />
+    </>
   );
 }
 
@@ -195,4 +215,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 6,
   },
+ 
 });

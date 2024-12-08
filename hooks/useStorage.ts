@@ -27,7 +27,7 @@ const useStorage = () => {
       dados.push(newData);
 
       await AsyncStorage.setItem('@form', JSON.stringify(dados));
-      // await AsyncStorage.clear()
+
     } catch (error) {
       console.log("erro ao salvar", error);
       return [];

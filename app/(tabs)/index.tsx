@@ -3,11 +3,15 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, Statu
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
+import { EditModal } from "@/components/modal/editModal";
 import useStorage from "@/hooks/useStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const [listData, setListData] = useState([]);
   const [modalConfigVisible, setModalConfigVisible] = useState(false);
+  const [editItem, setEditItem] = useState(null);
+  const [modalEditVisible, setModalEditVisible] = useState(false);
   const focused = useIsFocused();
   const { getItem, deleteItem } = useStorage();
 
@@ -21,29 +25,29 @@ export default function HomeScreen() {
   }, [focused, modalConfigVisible === false]);
 
   const handleDelete = async (nomeCrianca) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Deseja realmente excluir o cronômetro de ${nomeCrianca}?`,
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            const success = await deleteItem(nomeCrianca);
-            if (success) {
-              await loadList(); 
-            } else {
-              Alert.alert("Erro", "Ocorreu um problema ao excluir o item.");
-            }
-          },
-        },
-      ]
-    );
+    const success = await deleteItem(nomeCrianca);
+    if (success) {
+      await loadList();
+    } else {
+      Alert.alert("Erro", "Ocorreu um problema ao excluir o item.");
+    }
   };
+
+  const handleSaveEdit = async (updatedData) => {
+    const storedData = await getItem();
+    
+    const updatedList = storedData.map((item) =>
+      item.nomeCrianca === editItem.nomeCrianca ? updatedData : item
+    );
+  
+    await AsyncStorage.setItem("@form", JSON.stringify(updatedList)); 
+    
+    setListData([...updatedList]); 
+  
+    setModalEditVisible(false); 
+  };
+  
+  
 
   return (
     <View style={styles.container}>
@@ -57,9 +61,12 @@ export default function HomeScreen() {
         <FlatList
           style={{ paddingLeft: 14, paddingTop: 14 }}
           data={listData}
-          keyExtractor={(_, index) => index.toString()}
+          keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <CronometroItem data={item} onDelete={() => handleDelete(item.nomeCrianca)} />
+            <CronometroItem
+              data={item}
+              onDelete={() => handleDelete(item.nomeCrianca)}
+            />
           )}
         />
       </View>
@@ -67,6 +74,14 @@ export default function HomeScreen() {
       <Modal visible={modalConfigVisible} animationType="fade" transparent={true}>
         <ModalConfig handleClose={() => setModalConfigVisible(false)} />
       </Modal>
+
+      <EditModal
+        visible={modalEditVisible}
+        data={editItem}
+        onClose={() => setModalEditVisible(false)}
+        onSave={handleSaveEdit}
+      />
+
       <View style={styles.buttonArea}>
         <TouchableOpacity style={styles.button} onPress={() => setModalConfigVisible(true)}>
           <Text style={styles.buttonTitle}>Adicionar +</Text>
