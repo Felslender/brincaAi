@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar, RefreshControl } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const [listData, setListData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); 
   const [modalConfigVisible, setModalConfigVisible] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -65,6 +66,17 @@ export default function HomeScreen() {
               onDelete={() => handleDelete(item.nomeCrianca)}
             />
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing} 
+              onRefresh={async () => {
+                setRefreshing(true); 
+                await loadList(); 
+                setRefreshing(false); 
+              }}
+              colors={["#2F75F7"]} 
+            />
+          }
         />
       </View>
 
@@ -80,8 +92,6 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {
