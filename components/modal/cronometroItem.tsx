@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, AppState, TouchableOpacity, Alert, } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EditModal } from "./editModal";
-import useStorage from "@/hooks/useStorage";
 
-export function CronometroItem({ data, onDelete }) {
+export function CronometroItem({ data, onDelete, reloadData }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [timeFinished, setTimeFinished] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
 
   useEffect(() => {
     const identifier = `cronometro-${data.nomeCrianca}`;
@@ -25,13 +23,12 @@ export function CronometroItem({ data, onDelete }) {
         const currentTime = new Date().getTime();
         const elapsedTime = Math.floor((currentTime - parseInt(storedStartTime)) / 1000);
         const durationInSeconds = parseInt(storedDuration) * 60;
+
         const remainingTime = durationInSeconds - elapsedTime;
 
         if (remainingTime <= 0) {
           const finishedTime = await AsyncStorage.getItem(finishedTimeKey);
-          if (finishedTime) {
-            setTimeFinished(finishedTime);
-          } else {
+          if (!finishedTime) {
             const horario = new Date();
             const formattedTime = `${horario.getHours()}:${String(horario.getMinutes()).padStart(2, "0")}`;
             setTimeFinished(formattedTime);
@@ -51,7 +48,8 @@ export function CronometroItem({ data, onDelete }) {
         const startTime = new Date().getTime();
         await AsyncStorage.setItem(startTimeKey, startTime.toString());
         await AsyncStorage.setItem(durationKey, data.minutos.toString());
-        setTimeLeft(data.minutos * 60);
+
+        setTimeLeft(parseInt(data.minutos) * 60);
       } else {
         await calculateTimeLeft();
       }
@@ -68,16 +66,13 @@ export function CronometroItem({ data, onDelete }) {
     return () => {
       appStateListener.remove();
     };
-  }, [data]);
+  }, [data.minutos]);
 
   useEffect(() => {
-    if (timeLeft === 0) return;
+    if (timeLeft === null || timeLeft === 0) return;
 
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        const updatedTime = prev - 1;
-        return updatedTime > 0 ? updatedTime : 0;
-      });
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -92,7 +87,7 @@ export function CronometroItem({ data, onDelete }) {
   const handleDelete = () => {
     Alert.alert(
       "Confirmar Exclusão",
-      `Deseja realmente excluir o cronômetro de ${data.nomeCrianca}?`,
+      `Deseja realmente excluir o cronômetro "${data.nomeCrianca}"?`,
       [
         {
           text: "Cancelar",
@@ -101,9 +96,7 @@ export function CronometroItem({ data, onDelete }) {
         {
           text: "Excluir",
           style: "destructive",
-          onPress: () => {
-            onDelete(data.nomeCrianca);
-          },
+          onPress: () => onDelete(data.nomeCrianca),
         },
       ]
     );
@@ -113,22 +106,23 @@ export function CronometroItem({ data, onDelete }) {
     const identifier = `cronometro-${updatedData.nomeCrianca}`;
     const startTimeKey = `${identifier}-startTime`;
     const durationKey = `${identifier}-duration`;
-  
+
     if (updatedData.minutos !== data.minutos) {
       const startTime = new Date().getTime();
       await AsyncStorage.setItem(startTimeKey, startTime.toString());
       await AsyncStorage.setItem(durationKey, updatedData.minutos.toString());
       setTimeLeft(parseInt(updatedData.minutos) * 60);
     }
-  
+
     const storedData = await AsyncStorage.getItem("@form");
     const parsedData = storedData ? JSON.parse(storedData) : [];
     const updatedDataArray = parsedData.map((item) =>
       item.nomeCrianca === data.nomeCrianca ? updatedData : item
     );
     await AsyncStorage.setItem("@form", JSON.stringify(updatedDataArray));
-  
+
     setModalVisible(false);
+    reloadData();
   };
 
   return (
@@ -150,7 +144,7 @@ export function CronometroItem({ data, onDelete }) {
           <MaterialIcons name="delete-forever" size={45} color="black" />
         </TouchableOpacity>
       </TouchableOpacity>
-      
+
       <EditModal
         visible={modalVisible}
         data={data}
@@ -160,6 +154,7 @@ export function CronometroItem({ data, onDelete }) {
     </>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

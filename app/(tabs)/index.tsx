@@ -64,6 +64,7 @@ export default function HomeScreen() {
             <CronometroItem
               data={item}
               onDelete={() => handleDelete(item.nomeCrianca)}
+              reloadData={loadList}
             />
           )}
           refreshControl={
