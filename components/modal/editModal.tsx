@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Modal, View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
+import { Modal, View, Text, StyleSheet, TextInput, Button, Switch, Alert } from "react-native";
 import useStorage from "@/hooks/useStorage";
 
 export function EditModal({ visible, data, onClose, onSave }) {
@@ -10,11 +10,7 @@ export function EditModal({ visible, data, onClose, onSave }) {
   useEffect(() => {
     if (visible === true) {
       setEditData({ ...data });
-      console.log("EditModal is visible:", visible);
-      console.log("Current data:", data);
-    } else {
-      console.log("fechou")
-    }
+    } 
   }, [visible]);
 
   const handleSave = async () => {
@@ -65,6 +61,13 @@ export function EditModal({ visible, data, onClose, onSave }) {
           onChangeText={(text) => setEditData({ ...editData, numTelefone: text })}
           placeholder="Telefone"
         />
+          <View style={styles.switchArea}>
+            <Text style={styles.titleSwitch}>Pago:</Text>
+            <Switch style={styles.switch}
+              value={editData.pago}
+              onValueChange={(value) => setEditData({ ...editData, pago: value })}
+            />
+          </View>
         <TextInput
           style={styles.input}
           value={editData.minutos || ""}
@@ -107,4 +110,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: "80%",
   },
+  
+  switchArea: {
+    alignItems: "center",
+    right: 115,
+    width: 100,
+    marginBottom: 8,
+    flexDirection: "row",
+    backgroundColor: "#FFF",
+    borderRadius: 5,
+  },
+  switch: {
+    
+  },
+  titleSwitch: {
+    fontSize: 15,
+    color: "black"
+  }
 });
