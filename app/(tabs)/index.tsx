@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar, RefreshControl } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar, RefreshControl, ScrollView,} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
 import useStorage from "@/hooks/useStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const [listData, setListData] = useState([]);
-  const [refreshing, setRefreshing] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
   const [modalConfigVisible, setModalConfigVisible] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -22,7 +21,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     loadList();
-  }, [focused, modalConfigVisible === false, modalEditVisible === false]);
+  }, [focused, modalConfigVisible === false]);
 
   const handleDelete = async (nomeCrianca) => {
     const success = await deleteItem(nomeCrianca);
@@ -42,38 +41,43 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.listContainer}>
-      <FlatList
-        style={{ paddingLeft: 14, paddingTop: 14 }}
-        data={listData}
-        keyExtractor={(item) => item.nomeCrianca} 
-        renderItem={({ item }) => (
-      <CronometroItem
-        data={item}
-        onDelete={() => handleDelete(item.nomeCrianca)}
-        reloadData={loadList}
-      />
-      )}
-    refreshControl={
-    <RefreshControl
-      refreshing={refreshing}
-      onRefresh={async () => {
-        setRefreshing(true);
-        await loadList();
-        setRefreshing(false);
-      }}
-      colors={["#2F75F7"]}
-    />
-  }
-/>
-
+        <ScrollView
+          contentContainerStyle={{ paddingLeft: 14, paddingTop: 14 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={async () => {
+                setRefreshing(true);
+                await loadList();
+                setRefreshing(false);
+              }}
+              colors={["#2F75F7"]}
+            />
+          }
+        >
+          {listData.map((item) => (
+            <CronometroItem
+              key={item.nomeCrianca} 
+              data={item}
+              onDelete={() => handleDelete(item.nomeCrianca)}
+              reloadData={loadList}
+            />
+          ))}
+        </ScrollView>
       </View>
-
-      <Modal visible={modalConfigVisible} animationType="fade" transparent={true}>
+      <Modal
+        visible={modalConfigVisible}
+        animationType="fade"
+        transparent={true}
+      >
         <ModalConfig handleClose={() => setModalConfigVisible(false)} />
       </Modal>
-      
+
       <View style={styles.buttonArea}>
-        <TouchableOpacity style={styles.button} onPress={() => setModalConfigVisible(true)}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalConfigVisible(true)}
+        >
           <Text style={styles.buttonTitle}>Adicionar +</Text>
         </TouchableOpacity>
       </View>

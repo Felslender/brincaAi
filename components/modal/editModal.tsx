@@ -8,10 +8,12 @@ export function EditModal({ visible, data, onClose, onSave }) {
   const { getItem } = useStorage();
 
   useEffect(() => {
-    if (visible) {
+    if (visible === true) {
       setEditData({ ...data });
       console.log("EditModal is visible:", visible);
       console.log("Current data:", data);
+    } else {
+      console.log("fechou")
     }
   }, [visible]);
 
