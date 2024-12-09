@@ -33,20 +33,6 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSaveEdit = async (updatedData) => {
-    const storedData = await getItem();
-    
-    const updatedList = storedData.map((item) =>
-      item.nomeCrianca === editItem.nomeCrianca ? updatedData : item
-    );
-  
-    await AsyncStorage.setItem("@form", JSON.stringify(updatedList)); 
-    
-    setListData([...updatedList]); 
-  
-    setModalEditVisible(false); 
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="black" />
@@ -56,29 +42,30 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.listContainer}>
-        <FlatList
-          style={{ paddingLeft: 14, paddingTop: 14 }}
-          data={listData}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <CronometroItem
-              data={item}
-              onDelete={() => handleDelete(item.nomeCrianca)}
-              reloadData={loadList}
-            />
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing} 
-              onRefresh={async () => {
-                setRefreshing(true); 
-                await loadList(); 
-                setRefreshing(false); 
-              }}
-              colors={["#2F75F7"]} 
-            />
-          }
-        />
+      <FlatList
+        style={{ paddingLeft: 14, paddingTop: 14 }}
+        data={listData}
+        keyExtractor={(item) => item.nomeCrianca} 
+        renderItem={({ item }) => (
+      <CronometroItem
+        data={item}
+        onDelete={() => handleDelete(item.nomeCrianca)}
+        reloadData={loadList}
+      />
+      )}
+    refreshControl={
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={async () => {
+        setRefreshing(true);
+        await loadList();
+        setRefreshing(false);
+      }}
+      colors={["#2F75F7"]}
+    />
+  }
+/>
+
       </View>
 
       <Modal visible={modalConfigVisible} animationType="fade" transparent={true}>

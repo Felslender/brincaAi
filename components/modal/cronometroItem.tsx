@@ -156,6 +156,7 @@ export function CronometroItem({ data, onDelete, reloadData }) {
 }
 
 
+
 const styles = StyleSheet.create({
   container: {
     padding: 7,

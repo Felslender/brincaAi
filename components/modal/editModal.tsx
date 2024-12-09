@@ -1,30 +1,32 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Modal, View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
 import useStorage from "@/hooks/useStorage";
 
 export function EditModal({ visible, data, onClose, onSave }) {
   const [editData, setEditData] = useState({ ...data });
-  const { getItem } = useStorage(); 
+  const { getItem } = useStorage();
 
   useEffect(() => {
-    if (data) {
+    if (visible) {
       setEditData({ ...data });
+      console.log("EditModal is visible:", visible);
+      console.log("Current data:", data);
     }
-  }, [data]);
+  }, [visible]);
 
   const handleSave = async () => {
     const existingItems = await getItem();
-  
+
     const isDuplicate = existingItems.some(
       (item) => item.nomeCrianca === editData.nomeCrianca && item.nomeCrianca !== data.nomeCrianca
     );
-  
+
     if (isDuplicate) {
       Alert.alert("Erro", "Já existe um cronômetro com esse nome. Escolha outro nome.");
       return;
     }
-  
+
     if (editData.nomeCrianca !== data.nomeCrianca) {
       const identifierOld = `cronometro-${data.nomeCrianca}`;
       const keysToRemove = [
@@ -32,11 +34,11 @@ export function EditModal({ visible, data, onClose, onSave }) {
         `${identifierOld}-duration`,
         `${identifierOld}-finishedTime`,
       ];
-  
+
       await AsyncStorage.multiRemove(keysToRemove);
     }
-  
-    onSave(editData); 
+
+    onSave(editData);
   };
 
   return (
@@ -51,19 +53,19 @@ export function EditModal({ visible, data, onClose, onSave }) {
         />
         <TextInput
           style={styles.input}
-          value={editData.nomeResponsavel}
+          value={editData.nomeResponsavel || ""}
           onChangeText={(text) => setEditData({ ...editData, nomeResponsavel: text })}
           placeholder="Responsável"
         />
         <TextInput
           style={styles.input}
-          value={editData.numTelefone}
+          value={editData.numTelefone || ""}
           onChangeText={(text) => setEditData({ ...editData, numTelefone: text })}
           placeholder="Telefone"
         />
         <TextInput
           style={styles.input}
-          value={editData.minutos}
+          value={editData.minutos || ""}
           onChangeText={(text) => setEditData({ ...editData, minutos: text })}
           placeholder="Minutos"
           keyboardType="numeric"
@@ -76,6 +78,7 @@ export function EditModal({ visible, data, onClose, onSave }) {
     </Modal>
   );
 }
+
 
 const styles = StyleSheet.create({
   modalContainer: {
