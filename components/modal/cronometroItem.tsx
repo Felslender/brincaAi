@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, AppState } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, AppState, Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EditModal } from "./editModal";
@@ -155,62 +155,60 @@ export function CronometroItem({ data, onDelete, reloadData }) {
   );
 }
 
-
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    padding: 7,
     flexDirection: "row",
     backgroundColor: "#e0e0e0",
-    width: "80%",
-    height: 80,
+    width: "100%",
+    height: height * 0.1, 
     marginBottom: 14,
+    padding: "2%",
     gap: 8,
     borderRadius: 8,
+    alignSelf: "center", 
   },
   infoArea: {
     backgroundColor: "#f7f7f7",
     borderRadius: 6,
-    width: 190,
-    padding: 2,
+    flex: 2,
   },
   cronometroArea: {
     borderRadius: 6,
     backgroundColor: "#f7f7f7",
-    width: 105,
-    padding: 10,
+    flex: 1,
+    padding: "3%",
     alignItems: "center",
     justifyContent: "center",
   },
   nome: {
-    fontSize: 16,
+    fontSize: width * 0.045, 
     fontWeight: "bold",
   },
   tempo: {
-    fontSize: 18,
+    fontSize: width * 0.05, 
     fontWeight: "bold",
   },
   textDefault: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: "bold",
   },
   textRed: {
-    fontSize: 16,
+    fontSize: width * 0.035,
     fontWeight: "bold",
     color: "red",
   },
   tempoRed: {
-    fontSize: 18,
+    fontSize: width * 0.05,
     fontWeight: "bold",
     color: "red",
   },
   button: {
     backgroundColor: "#f7f7f7",
-    padding: 7,
-    marginLeft: 10,
+    padding: "2%",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 6,
-  },
- 
+  }
 });

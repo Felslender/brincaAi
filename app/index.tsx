@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, Alert, StatusBar, RefreshControl, ScrollView,} from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  StatusBar,
+  RefreshControl,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { ModalConfig } from "@/components/modal/configModal";
 import { CronometroItem } from "@/components/modal/cronometroItem";
@@ -42,7 +54,7 @@ export default function HomeScreen() {
 
       <View style={styles.listContainer}>
         <ScrollView
-          contentContainerStyle={{ paddingLeft: 14, paddingTop: 14 }}
+          contentContainerStyle={{ paddingHorizontal: 14, paddingTop: 14 }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -57,7 +69,7 @@ export default function HomeScreen() {
         >
           {listData.map((item) => (
             <CronometroItem
-              key={item.nomeCrianca} 
+              key={item.nomeCrianca}
               data={item}
               onDelete={() => handleDelete(item.nomeCrianca)}
               reloadData={loadList}
@@ -85,6 +97,8 @@ export default function HomeScreen() {
   );
 }
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -92,7 +106,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    height: 80,
+    height: height * 0.12, 
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#2F75F7",
@@ -100,10 +114,12 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFFFFF",
     fontWeight: "bold",
-    fontSize: 26,
+    fontSize: width * 0.06, 
+    marginTop: height * 0.02, 
   },
   listContainer: {
     flex: 1,
+    paddingHorizontal: 8,
   },
   buttonArea: {
     alignItems: "center",
@@ -111,22 +127,20 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "#ededed",
     width: "100%",
-    height: 100,
+    height: height * 0.1,
     borderColor: "black",
   },
   button: {
-    marginLeft: "20%",
-    width: "60%",
-    height: 60,
+    width: "80%", 
+    height: height * 0.07, 
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 6,
     backgroundColor: "#49d72d",
-    position: "absolute",
   },
   buttonTitle: {
     color: "#f0f2f5",
-    fontSize: 20,
+    fontSize: width * 0.045, 
     fontWeight: "bold",
   },
 });

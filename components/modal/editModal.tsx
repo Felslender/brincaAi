@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Modal, View, Text, StyleSheet, TextInput, Button, Switch, Alert } from "react-native";
+import { Modal, View, Text, StyleSheet, TextInput, Button, Switch, Alert, Dimensions } from "react-native";
 import useStorage from "@/hooks/useStorage";
 
 export function EditModal({ visible, data, onClose, onSave }) {
@@ -10,7 +10,7 @@ export function EditModal({ visible, data, onClose, onSave }) {
   useEffect(() => {
     if (visible === true) {
       setEditData({ ...data });
-    } 
+    }
   }, [visible]);
 
   const handleSave = async () => {
@@ -61,13 +61,13 @@ export function EditModal({ visible, data, onClose, onSave }) {
           onChangeText={(text) => setEditData({ ...editData, numTelefone: text })}
           placeholder="Telefone"
         />
-          <View style={styles.switchArea}>
-            <Text style={styles.titleSwitch}>Pago:</Text>
-            <Switch style={styles.switch}
-              value={editData.pago}
-              onValueChange={(value) => setEditData({ ...editData, pago: value })}
-            />
-          </View>
+        <View style={styles.switchArea}>
+          <Text style={styles.titleSwitch}>Pago:</Text>
+          <Switch
+            value={editData.pago}
+            onValueChange={(value) => setEditData({ ...editData, pago: value })}
+          />
+        </View>
         <TextInput
           style={styles.input}
           value={editData.minutos || ""}
@@ -84,6 +84,7 @@ export function EditModal({ visible, data, onClose, onSave }) {
   );
 }
 
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -93,38 +94,41 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: width * 0.06, 
     color: "#fff",
     marginBottom: 10,
   },
   input: {
-    width: "80%",
-    height: 40,
+    width: "90%", 
+    height: height * 0.06, 
     backgroundColor: "#fff",
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
+    fontSize: width * 0.045, 
   },
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: "80%",
+    width: "90%",
+    marginTop: 10,
   },
-  
   switchArea: {
-    alignItems: "center",
-    right: 115,
-    width: 100,
-    marginBottom: 8,
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "90%", 
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     backgroundColor: "#FFF",
     borderRadius: 5,
+    marginBottom: 10,
   },
   switch: {
-    
+    marginLeft: 10,
   },
   titleSwitch: {
-    fontSize: 15,
-    color: "black"
-  }
+    fontSize: width * 0.045, 
+    color: "black",
+  },
 });

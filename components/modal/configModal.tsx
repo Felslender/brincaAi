@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Switch, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Switch, Alert, Dimensions } from "react-native";
 import useStorage from "@/hooks/useStorage";
 import { FormData } from "@/hooks/useStorage";
 
-export function ModalConfig( {handleClose} ) {
+export function ModalConfig({ handleClose }) {
   const [formData, setFormData] = useState<FormData>({
     nomeCrianca: "",
     nomeResponsavel: "",
@@ -13,7 +13,7 @@ export function ModalConfig( {handleClose} ) {
     minutos: "",
   });
 
-  const {saveItem, getItem} = useStorage()
+  const { saveItem, getItem } = useStorage();
 
   const handleInputChange = (field, values) => {
     setFormData((prev) => ({ ...prev, [field]: values }));
@@ -27,23 +27,22 @@ export function ModalConfig( {handleClose} ) {
   };
 
   async function handleSave() {
-    const cronometros = await getItem(); 
-  
-    const existe = cronometros.some(item => item.nomeCrianca === formData.nomeCrianca);
-  
+    const cronometros = await getItem();
+
+    const existe = cronometros.some((item) => item.nomeCrianca === formData.nomeCrianca);
+
     if (existe) {
       Alert.alert(
         "Erro",
         `Já existe um cronômetro com o nome "${formData.nomeCrianca}". Por favor, escolha outro nome.`
       );
-      return; 
+      return;
     }
     await saveItem(formData);
     console.log(await getItem());
-  
-    handleClose(); 
+
+    handleClose();
   }
-  
 
   return (
     <View style={styles.container}>
@@ -72,12 +71,13 @@ export function ModalConfig( {handleClose} ) {
             value={formData.numTelefone}
             onChangeText={(text) => handleInputChange("numTelefone", text)}
           />
-          <Text>Pago:</Text>
           <View style={styles.switchArea}>
-          <Switch style={styles.switch}
-            value={formData.pago}
-            onValueChange={(value) => handleInputChange("pago", value)}
-          />
+            <Text>Pago:</Text>
+            <Switch
+              style={styles.switch}
+              value={formData.pago}
+              onValueChange={(value) => handleInputChange("pago", value)}
+            />
           </View>
           <Text>Minutos</Text>
           <TextInput
@@ -102,6 +102,8 @@ export function ModalConfig( {handleClose} ) {
   );
 }
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "rgba(24,24,24,0.6)",
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
   },
   box: {
     width: "90%",
-    padding: 24,
+    padding: height * 0.03, 
     marginBottom: 10,
     borderRadius: 10,
     alignItems: "center",
@@ -124,9 +126,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    fontSize: 20,
+    fontSize: width * 0.05, 
     fontWeight: "bold",
-    paddingBottom: 20,
+    paddingBottom: height * 0.02, 
   },
   inputArea: {
     gap: 12,
@@ -134,45 +136,50 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: 45,
+    height: height * 0.06, 
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 6,
     paddingLeft: 12,
-    fontSize: 16,
+    fontSize: width * 0.04, 
     backgroundColor: "#fff",
   },
   buttonArea: {
-    width: "90%",
+    width: "100%",
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: height * 0.02, 
     alignItems: "center",
     justifyContent: "space-between",
   },
   button: {
     flex: 1,
     alignItems: "center",
-    marginTop: 14,
-    marginBottom: 14,
-    padding: 8,
+    marginHorizontal: width * 0.02, 
+    marginTop: height * 0.01, 
+    marginBottom: height * 0.01,
+    padding: height * 0.015, 
     borderRadius: 6,
   },
   buttonSave: {
     backgroundColor: "#49d72d",
   },
   buttonTitle: {
-    fontSize: 16,
+    fontSize: width * 0.04, 
     fontWeight: "bold",
   },
   buttonTitleSave: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "bold",
     color: "#FFF",
   },
   switchArea: {
-    flexDirection: "row"
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "4%",
+    width: "100%",
+    marginBottom: height * 0.01,
   },
   switch: {
-    
-  }
+    transform: [{ scale: width > 400 ? 1.2 : 1 }], 
+  },
 });
