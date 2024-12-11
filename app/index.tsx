@@ -28,7 +28,11 @@ export default function HomeScreen() {
 
   const loadList = async () => {
     const cronometros = await getItem();
-    setListData(cronometros);
+    const sortedList = cronometros.sort((a, b) => {
+      if (a.brincando === b.brincando) return 0;
+      return a.brincando ? -1 : 1;
+    });
+    setListData(sortedList);
   };
 
   useEffect(() => {
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    height: height * 0.12, 
+    height: height * 0.12,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#2F75F7",
@@ -114,8 +118,8 @@ const styles = StyleSheet.create({
   title: {
     color: "#FFFFFF",
     fontWeight: "bold",
-    fontSize: width * 0.06, 
-    marginTop: height * 0.02, 
+    fontSize: width * 0.06,
+    marginTop: height * 0.02,
   },
   listContainer: {
     flex: 1,
@@ -131,8 +135,8 @@ const styles = StyleSheet.create({
     borderColor: "black",
   },
   button: {
-    width: "80%", 
-    height: height * 0.07, 
+    width: "80%",
+    height: height * 0.07,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 6,
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     color: "#f0f2f5",
-    fontSize: width * 0.045, 
+    fontSize: width * 0.045,
     fontWeight: "bold",
   },
 });

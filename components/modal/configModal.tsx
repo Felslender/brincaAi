@@ -10,6 +10,7 @@ export function ModalConfig({ handleClose }) {
     numTelefone: "",
     dataNascimento: "",
     pago: false,
+    brincando: true,
     minutos: "",
   });
 

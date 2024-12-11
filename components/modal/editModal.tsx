@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Modal, View, Text, StyleSheet, TextInput, Button, Switch, Alert, Dimensions } from "react-native";
+import { Modal, View, Text, StyleSheet, TextInput, Button, Switch, Alert, Dimensions, TouchableOpacity } from "react-native";
 import useStorage from "@/hooks/useStorage";
 
-export function EditModal({ visible, data, onClose, onSave }) {
+export function EditModal({ visible, data, onClose, onSave, onDelete }) {
   const [editData, setEditData] = useState({ ...data });
   const { getItem } = useStorage();
 
   useEffect(() => {
-    if (visible === true) {
+    if (visible) {
       setEditData({ ...data });
     }
   }, [visible]);
@@ -37,6 +37,24 @@ export function EditModal({ visible, data, onClose, onSave }) {
     }
 
     onSave(editData);
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Confirmar Exclusão",
+      `Deseja realmente excluir o cronômetro "${data.nomeCrianca}"?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: () => {
+            onDelete(data.nomeCrianca);
+            onClose();
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -76,8 +94,18 @@ export function EditModal({ visible, data, onClose, onSave }) {
           keyboardType="numeric"
         />
         <View style={styles.modalButtons}>
-          <Button title="Salvar" onPress={handleSave} />
-          <Button title="Cancelar" onPress={onClose} />
+
+          <TouchableOpacity style={styles.buttonGreen} onPress={handleSave}>
+            <Text style={styles.title}>Salvar</Text>
+          </TouchableOpacity >
+
+          <TouchableOpacity style={styles.buttonRed} onPress={handleDelete}>
+            <Text  style={styles.title}>Excluir</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity  style={styles.buttonCancel} onPress={onClose} >
+            <Text style={styles.title}>Cancelar</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -108,10 +136,32 @@ const styles = StyleSheet.create({
     fontSize: width * 0.045, 
   },
   modalButtons: {
-    flexDirection: "row",
     justifyContent: "space-around",
-    width: "90%",
+    width: "75%",
     marginTop: 10,
+    gap: 10
+  },
+  title: {
+    color: "#edf2ed",
+    fontWeight: "bold",
+  },
+  buttonRed: {
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: "red"
+  },
+  buttonGreen:{
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    backgroundColor: "#4ac94a"
+  },
+  buttonCancel: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    backgroundColor: "#0fbdfa"
   },
   switchArea: {
     flexDirection: "row",
