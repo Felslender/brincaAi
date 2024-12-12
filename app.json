@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "brincaAI",
-    "owner": "felslender-2",
+    "owner": "felslender",
     "slug": "brincaAI",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.brincaai.app"
     },
     "android": {
       "package": "com.brincaai.app",
