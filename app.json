@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "brincaAI",
+    "owner": "felslender-2",
     "slug": "brincaAI",
     "version": "1.0.0",
     "orientation": "portrait",
